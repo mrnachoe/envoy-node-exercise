@@ -1,0 +1,23 @@
+{
+  "name": "backend-code-test",
+  "version": "1.0.0",
+  "description": "The Envoy Group Backend-Engineer Code Test. This exercise is used to assess required technical skills, problem solving and ability.",
+  "main": "exercise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weareenvoy/backend-code-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weareenvoy/backend-code-test/issues"
+  },
+  "homepage": "https://github.com/weareenvoy/backend-code-test#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
