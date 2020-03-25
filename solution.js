@@ -20,22 +20,49 @@ const fs = require('fs');
  * @param {string|json} req_body - The body payload for the request
  * @returns void
  */
+// function postCall({
+//   api_url,
+//   req_method,
+//   req_body
+// }) {
+//     fetch(api_url, {
+//         method: req_method,
+//         body: req_body,
+//     }).then(res => {
+//         res.json().then(data => {
+//             console.log(data);
+//         }).catch(json_err => {
+//             console.error('Error with json read', json_err.toString());
+//         });
+//     }).catch(err => {
+//         console.error('Error with api call', err.toString());
+//     });
+// }
+
+/**
+ * Comment
+ * To handle errors correctly you need to also wrap the request in a Promise
+ */
 function postCall({
-  api_url,
-  req_method,
-  req_body
+    api_url,
+    req_method,
+    req_body
 }) {
-    fetch(api_url, {
-        method: req_method,
-        body: req_body,
-    }).then(res => {
-        res.json().then(data => {
-            console.log(data);
-        }).catch(json_err => {
-            console.error('Error with json read', json_err.toString());
+    return new Promise((resolve, reject) => {
+        fetch(api_url, {
+            method: req_method,
+            body: req_body,
+        }).then(res => {
+            res.json().then(data => {
+                resolve(data);
+            }).catch(json_err => {
+                console.error('Error with json read', json_err.toString());
+                reject(json_err);
+            });
+        }).catch(err => {
+            console.error('Error with api call', err.toString());
+            reject(err);
         });
-    }).catch(err => {
-        console.error('Error with api call', err.toString());
     });
 }
 
@@ -78,11 +105,45 @@ function getReqBody() {
     });
 }
 
-(async () => {
-    // Invoke the api call
-    postCall({
-        api_url: await getApiUrl(),
-        req_method: await getReqMethod(),
-        req_body: await getReqBody()
+/**
+ * Comment
+ * This is the solution we are looking for
+ * However, one issue we see is that should there be an error you fail to handle it
+ */
+// (async () => {
+//     // Invoke the api call
+//     postCall({
+//         api_url: await getApiUrl(),
+//         req_method: await getReqMethod(),
+//         req_body: await getReqBody()
+//     });
+// })();
+
+// Error handling
+getApiUrl().then(api_url => {
+
+    getReqMethod().then(req_method => {
+
+        getReqBody().then(req_body => {
+
+            postCall({
+                api_url,
+                req_method,
+                req_body
+            }).then(api_res => {
+                console.log(api_res);
+            }).catch(api_err => {
+                throw api_err;
+            });
+
+        }).catch(req_body_err => {
+            throw req_body_err;
+        });
+
+    }).catch(req_method_err => {
+        throw req_method_err;
     });
-})();
+
+}).catch(url_err => {
+    throw url_err;
+});
